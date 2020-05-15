@@ -13,7 +13,7 @@ class OvenMachine(Machine):
         super().__init__(self)
         self._temp = 0
 
-    def receive_signal(self, code, **args):
+    def send_signal(self, code, **args):
         """Base interface for sending signals to the machine."""
 
     def read_value(self, code):
