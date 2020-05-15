@@ -25,6 +25,14 @@ while True:
         print("Switch is PAUSED")
 
     if machine.state == Machine.ON:
+        if machine.oven_machine.current_temp < 220:
+            machine.oven_machine.send_signal(OvenMachine.HEATING_ON)
+        else:
+            machine.oven_machine.send_signal(OvenMachine.HEATING_OFF)
+
         machine.extruder_machine.send_signal(state, ExtruderMachine.EXTRUDE)
         machine.stamper_machine.send_signal(state, StamperMachine.STAMP)
         machine.oven_machine.send_signal(state, OvenMachine.BAKE)
+    elif machine.state == Machine.OFF:
+        machine.oven_machine.send_signal(state, OvenMachine.BAKE)
+        
