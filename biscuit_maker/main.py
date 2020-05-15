@@ -2,19 +2,20 @@ import time
 import threading
 from queue import Queue
 from biscuit_maker.machines.machine import MachineCodes, Machine
+from biscuit_maker.biscuit import Biscuit
 
-# machine = Machine()
-# print("Switch is OFF")
-# state = [
-#     Biscuit.NONEXISTENT,
-#     Biscuit.NONEXISTENT,
-#     Biscuit.NONEXISTENT,
-#     Biscuit.NONEXISTENT,
-#     Biscuit.NONEXISTENT,
-#     Biscuit.NONEXISTENT,
-#     Biscuit.NONEXISTENT,
-#     Biscuit.NONEXISTENT,
-# ]
+machine = Machine()
+print("Switch is OFF")
+state = [
+    Biscuit(),
+    Biscuit(),
+    Biscuit(),
+    Biscuit(),
+    Biscuit(),
+    Biscuit(),
+    Biscuit(),
+    Biscuit(),
+]
 
 def main():
     """
@@ -57,23 +58,22 @@ def main_loop(the_queue):
             elif user_command == "pause":
                 machine.send_signal(MachineCodes.PAUSE)
                 print("Switch is PAUSED")
-        # if machine.state == MachineCodes.ON:
-        #     if machine.oven_machine.current_temp < 220:
-        #         machine.oven_machine.send_signal(OvenMachine.HEATING_ON)
-        #     else:
-        #         machine.oven_machine.send_signal(OvenMachine.HEATING_OFF)
+        if machine.state == MachineCodes.ON:
+            if machine.oven_machine.current_temp < 220:
+                machine.oven_machine.send_signal(OvenMachine.HEATING_ON)
+            else:
+                machine.oven_machine.send_signal(OvenMachine.HEATING_OFF)
 
-        #     machine.extruder_machine.send_signal(state, ExtruderMachine.EXTRUDE)
-        #     machine.stamper_machine.send_signal(state, StamperMachine.STAMP)
-        #     machine.oven_machine.send_signal(state, OvenMachine.BAKE)
-        # elif machine.state == Machine.OFF:
-        #     machine.oven_machine.send_signal(state, OvenMachine.BAKE)
+            machine.extruder_machine.send_signal(state, ExtruderMachine.EXTRUDE)
+            machine.stamper_machine.send_signal(state, StamperMachine.STAMP)
+            machine.oven_machine.send_signal(state, OvenMachine.BAKE)
+        elif machine.state == Machine.OFF:
+            machine.oven_machine.send_signal(state, OvenMachine.BAKE)
         time.sleep(0.1)
 
 
 if __name__ == "__main__":
-    pass
     try:
         main()
     except Exception as ex:
-        print()
+        print(ex)
