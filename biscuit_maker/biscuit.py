@@ -6,6 +6,7 @@ class BiscuitStates(Enum):
     STAMPED = "STAMPED"
     BAKED_SEMI = "BAKED_SEMI"
     BAKED_FULLY = "BAKED_FULLY"
+    BAKED_BURNED = "BAKED_BURNED"
 
 
 class Biscuit(object):
