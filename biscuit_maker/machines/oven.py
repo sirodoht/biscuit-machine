@@ -10,6 +10,7 @@ class OvenCodes(Enum):
 class OvenMachine(Machine):
 
     def __init__(self):
+        super().__init__(self)
         self._temp = 0
 
     def receive_signal(self, code, **args):
