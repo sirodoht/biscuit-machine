@@ -26,5 +26,5 @@ while True:
 
     if machine.state == Machine.ON:
         machine.extruder_machine.send_signal(state, ExtruderMachine.EXTRUDE)
-        machine.stamper_machine.send_signal(state, ExtruderMachine.STAMP)
-        machine.oven_machine.send_signal(state, ExtruderMachine.BAKE)
+        machine.stamper_machine.send_signal(state, StamperMachine.STAMP)
+        machine.oven_machine.send_signal(state, OvenMachine.BAKE)
