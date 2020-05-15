@@ -58,7 +58,7 @@ def main_loop(the_queue):
             elif user_command == "pause":
                 machine.send_signal(MachineCodes.PAUSE)
                 print("Switch is PAUSED")
-        if machine.state == MachineCodes.ON:
+        if machine.read_value() == MachineCodes.ON:
             if machine.oven_machine.current_temp < 220:
                 machine.oven_machine.send_signal(OvenMachine.HEATING_ON)
             else:
@@ -67,7 +67,7 @@ def main_loop(the_queue):
             machine.extruder_machine.send_signal(state, ExtruderMachine.EXTRUDE)
             machine.stamper_machine.send_signal(state, StamperMachine.STAMP)
             machine.oven_machine.send_signal(state, OvenMachine.BAKE)
-        elif machine.state == Machine.OFF:
+        elif machine.read_value() == MachineCodes.ON:
             machine.oven_machine.send_signal(state, OvenMachine.BAKE)
         time.sleep(0.1)
 

@@ -1,8 +1,6 @@
 from enum import Enum
 
 class MachineCodes(Enum):
-    MACHINE_OFF = "MACHINE_OFF"
-    MACHINE_ON = "MACHINE_ON"
     ON = "ON"
     OFF = "OFF"
     PAUSE = "PAUSE"
@@ -17,6 +15,8 @@ class Machine(object):
 
     def send_signal(self, code, **args):
         """Base interface for sending signals to the machine."""
+        self._state = code
 
-    def read_value(self, code):
+    def read_value(self):
         """Base interface for reading machine values."""
+        return self._state
