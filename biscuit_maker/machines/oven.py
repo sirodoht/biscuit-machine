@@ -6,10 +6,15 @@ class OvenCodes(Enum):
     INCREASE_TEMP = "INCREASE_TEMP"
     DECREASE_TEMP = "DECREASE_TEMP"
 
+class OvenHeating(Enum):
+    ON = "ON"
+    OFF = "OFF"
+
 
 class OvenMachine():
     def __init__(self):
-        self._current_temp = 0
+        self._current_temp = 20
+        self._heating = OvenHeating.OFF
 
     def send_signal(self, belt, **args):
         """Base interface for sending signals to the machine."""
@@ -25,3 +30,18 @@ class OvenMachine():
     def read_value(self, belt):
         """Get current states of biscuits in oven's part of the belt"""
         return (belt[4], belt[5])
+
+    def get_temp(self):
+        return self._current_temp
+
+    def enable_heating(self):
+        self._heating = OvenHeating.ON
+
+    def disable_heating(self):
+        self._heating = OvenHeating.ON
+
+    def pulse(self):
+        if self._heating == OvenHeating.ON:
+            self._current_temp += 20
+        elif self._heating == OvenHeating.OFF:
+            self._current_temp -= 20
