@@ -11,7 +11,7 @@ class MotorMachine(Machine):
 
     def __init__(self):
         super().__init__()
-        self._temp = 0
+        self._state = MachineCodes.OFF
 
     def send_signal(self, code, **args):
         """Base interface for sending signals to the machine."""
@@ -32,7 +32,7 @@ def motor_loop(motor, queue):
         else:
             counter = 0
 
-        if counter > 50:
+        if counter > 20:
             queue.put(MotorCodes.MOTOR_PULSE)
             counter = 0
         time.sleep(0.1)

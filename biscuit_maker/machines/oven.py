@@ -1,31 +1,27 @@
+import time
 from enum import Enum
 from biscuit_maker.biscuit import Biscuit, BiscuitStates
-
+from biscuit_maker.machines.machine import Machine, MachineCodes
 
 class OvenCodes(Enum):
-    INCREASE_TEMP = "INCREASE_TEMP"
-    DECREASE_TEMP = "DECREASE_TEMP"
+    BAKE = "BAKE"
 
 class OvenHeating(Enum):
     ON = "ON"
     OFF = "OFF"
 
-
-class OvenMachine():
+class OvenMachine(Machine):
     def __init__(self):
         self._current_temp = 20
+        self._state = MachineCodes.OFF
         self._heating = OvenHeating.OFF
 
-    def send_signal(self, belt, **args):
+    def send_signal(self, code):
         """Base interface for sending signals to the machine."""
-        oven_positions = [4, 5]
-        for position in oven_positions:
-            if belt[position] == BiscuitStates.STAMPED:
-                belt[position] = BiscuitStates.BAKED_SEMI
-            elif belt[position] == BiscuitStates.BAKED_SEMI:
-                belt[position] = BiscuitStates.BAKED_FULLY
-            elif belt[position] == BiscuitStates.BAKED_FULLY:
-                belt[position] = BiscuitStates.BAKED_BURNED
+        if code == MachineCodes.ON:
+            self._state = MachineCodes.ON
+        elif code == MachineCodes.OFF:
+            self._state = MachineCodes.OFF
 
     def read_value(self, belt):
         """Get current states of biscuits in oven's part of the belt"""
@@ -38,10 +34,17 @@ class OvenMachine():
         self._heating = OvenHeating.ON
 
     def disable_heating(self):
-        self._heating = OvenHeating.ON
+        self._heating = OvenHeating.OFF
 
     def pulse(self):
         if self._heating == OvenHeating.ON:
-            self._current_temp += 20
+            self._current_temp += 3
         elif self._heating == OvenHeating.OFF:
-            self._current_temp -= 20
+            self._current_temp -= 3
+
+
+def oven_loop(oven):
+    """fucks with the oven temp"""
+    while True:
+        oven.pulse()
+        time.sleep(0.05)
