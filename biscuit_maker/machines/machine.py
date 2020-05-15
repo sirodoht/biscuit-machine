@@ -11,7 +11,7 @@ class Machine(object):
 
     def __init__(self):
         """"""
-        self._state = MachineCodes.MACHINE_OFF
+        self._state = MachineCodes.OFF
 
     def send_signal(self, code, **args):
         """Base interface for sending signals to the machine."""

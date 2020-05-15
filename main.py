@@ -2,10 +2,10 @@ import time
 import threading
 from queue import Queue
 from biscuit_maker.machines.machine import MachineCodes, Machine
+from biscuit_maker.machines.motor import MotorCodes, MotorMachine, motor_loop
 from biscuit_maker.biscuit import Biscuit
 
 machine = Machine()
-print("Switch is OFF")
 state = [
     Biscuit(),
     Biscuit(),
@@ -22,14 +22,18 @@ def main():
     sets up main threads
     """
     the_queue = Queue()
-    the_queue.empty
+    motor_queue = Queue()
+    the_motor = MotorMachine()
 
     the_input = threading.Thread(target=input_loop, args=(the_queue,))
-    the_bisquit = threading.Thread(target=main_loop, args=(the_queue,))
+    motor_thread = threading.Thread(target=motor_loop, args=(the_motor, motor_queue))
+    the_bisquit = threading.Thread(target=main_loop, args=(the_motor, the_queue, motor_queue))
 
     the_input.start()
+    motor_thread.start()
     the_bisquit.start()
     the_queue.join()
+    motor_queue.join()
 
 
 def input_loop(the_queue):
@@ -39,7 +43,7 @@ def input_loop(the_queue):
         the_queue.put(user_command)
 
 
-def main_loop(the_queue):
+def main_loop(motor, the_queue, motor_queue):
     machine = Machine()
     while True:
         user_command = ""
@@ -48,9 +52,21 @@ def main_loop(the_queue):
         except:
             pass
 
+        motor_signal = None
+        try:
+            motor_signal = motor_queue.get(block=False)
+        except:
+            pass
+
+        if motor_signal == MotorCodes.MOTOR_PULSE:
+            motor_queue.task_done()
+            print("got a pulse!")
+
         if user_command:
+            the_queue.task_done()
             if user_command == "on":
                 machine.send_signal(MachineCodes.ON)
+                motor.send_signal(MachineCodes.ON)
                 print("Switch is ON")
             elif user_command == "off":
                 machine.send_signal(MachineCodes.OFF)
